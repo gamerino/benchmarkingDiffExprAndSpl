@@ -1,2 +1,75 @@
-# benchmarkingDiffExprAndSpl
-Code for workflows for differential splicing and isoform expression comparison  paper (Merino et al)
+# Benchmarking of workflows for Differential splicing and differential isoform expression
+
+This repository contains the code used in our paper comparing several pipelines for differential isoform expression and differential splicing analysis:
+
+Merino GA, Conesa A & Fernández EA: A benchmarking of workflows for detecting differential splicing and differential expression at isoform level in human RNA-seq studies.
+
+The aim of our work was to contrast different workflows for differential isoform expressin and differential splicing based on the most used tools. Our study is based on simulated RNA-seq datasets generated from real experiments. 
+
+The structure of this repository is as follows:
+
+- SoftwareCodes
+  - bash_scripts: Directory containing the scripts used for processing RNA-seq data 
+  - R_scripts: Directory having the R scripts used to perform differential expression analysis
+
+- Simulation
+  - scripts: Directory containing the scripts used to generate synthetic RNA-seq data with controlled expression profiles
+  - figures: Directory having figures related to simulated RNA-seq experiments
+  
+- Results
+  - scripts: Directory containint the R scripts used to evaluate and compare differential expression results obtained using the evaluated pipelines
+  - figures: Directory having figures representing comparison results
+  
+- Supplementary
+  - Supplementary.docx: File with supplementary material
+  - figures: Directory containing all the figures included in the supplementary material
+
+Each directory contain a README and a HOWTO file. 
+
+Installation of the following software is needed:
+
+- SRA toolkit (http://www.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software)
+
+- TopHat2 (https://ccb.jhu.edu/software/tophat/index.shtml)
+
+- Bowtie (http://bowtie-bio.sourceforge.net/index.shtml)
+
+- Samtools (http://www.htslib.org/download/)
+
+- RSEM (http://deweylab.biostat.wisc.edu/rsem/)
+
+- Cufflinks2 (http://cole-trapnell-lab.github.io/cufflinks/)
+
+- BedTools (https://github.com/arq5x/bedtools2/releases)
+
+The fastq files corresponding to the human samples can be downloaded from ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByStudy/sra/SRP/SRP002/SRP002628
+
+- The normal samples used are: 
+    - SRR057649
+    - SRR057650
+    - SRR057651
+    - SRR057652
+    - SRR057653
+    - SRR057655
+    - SRR057656
+    - SRR057657
+
+- The tumor samples used are:
+    - SRR057631
+    - SRR057633
+    - SRR057640
+    - SRR057643
+    - SRR057644
+    - SRR057645
+    - SRR057646
+    - SRR057648
+
+The human reference files Ensembl can be donloaded from: 
+
+   * Genome FASTA file,  ftp://ftp.ensembl.org/pub/release-75/fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz
+    
+   * Transcriptome FASTA file, ftp://ftp.ensembl.org/pub/release-75/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh37.75.cdna.all.fa.gz
+    
+   * Annotation GTF file, ftp://ftp.ensembl.org/pub/release-75/gtf/homo_sapiens/Homo_sapiens.GRCh37.75.gtf.gz
+
+
