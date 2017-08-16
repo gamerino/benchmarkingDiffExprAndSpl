@@ -1,40 +1,73 @@
-Analysis Steps: 
-1-	Samples downloading: Download all samples from the NCBI ftp 
+Analysis steps performed to simulate and analyze RNA-seq experiments: 
+
+1-	Samples downloading: Download all samples from the NCBI ftp
+
 2-	Extract fastq files from SRA file doing
-> fastq-dump --split-3 file
-2-	Transcriptome alignment: Each sample was aligned against the HG19 reference trasncriptome using Bowtie. Then, aligned reads achieving maping q-value lower than 20 were filtered out. Command lines: 
+
+```
+    > fastq-dump --split-3 file
+```
+3- Formatting and indexing reference files
+
+```
+    > bowtie-build /path_to_transcriptome_reference/transcriptome_reference.fasta /path_to_transcriptome_reference/transcriptome_reference
+    > bowtie-build /path_to_genome_reference/genome_reference.fasta /path_to_genome_reference/genome_reference
+    > python /path/to/library/DEXSeq/python_scripts/dexseq_prepare_annotation.py /path_to_annotation_files/annotation_file.gtf  /path_to_annotation_files/flattened.dexseq.gtf
+    
+```
+4-	Transcriptome alignment: Each sample is aligned against the HG19 reference trasncriptome using Bowtie. Then, aligned reads achieving maping q-value lower than 20 are filtered out.
+
+```
 > cd path_to_sample_alignment_cdna
 > bowtie -q -n 3 -e 99999999 -l 15 -I 30 -X 270 --chunkmbs 512 -p 12 -a -S /path_to_transcriptome_reference/transcriptome_reference -1 /path_fastq_reads/sample_1.fastq -2 /path_fastq_reads/sample_2.fastq sample.sam
 > samtools view -bh -q20 -S sample.sam > sample.mapq20.bam
-3-	Quantification at isoform level: Aligned reads were quantified to obtain the expression profile of each sample at the isoform level. Command line:
+```
+5-	Quantification at the isoform level: Aligned reads are quantified to obtain the expression profile of each sample at the isoform level.
+```
 > cd path_to_RSEM_real_sample 
 > rsem-calculate-expression --paired-end --no-bam-output -p 18 --samtools-sort-mem 8G --temporary-folder tmp --bam /path_to_sample_alignment_cdna/sample.mapq20.bam /path_to_transcriptome_reference/transcriptome_reference sample > out.txt
-4-	Modification of expression profiles: The sample’s expression profiles were used to build the expression matrix where differential expression changes were simulated. This step was performed running the R script: “profilesSimulation.R” listed in the APPENDIX II. 
-5-	Samples simulation: Each sample for every simulation of each scenario was generated using the next command line, whereas N means the number of simulated reads:
+```
+6-	Modification of the expression profiles: The sample’s expression profiles are used to build the expression matrix where controlled differential expression changes will be simulated. This step is performed running the R script: “profilesSimulation.R” contained in the Simulation/scripts/ directory 
+
+7-	Samples simulation: Each sample for every simulation of each scenario is generated using the next command line, whereas N means the number of simulated reads:
+```
 > cd path_to_simulated_sample_sim_scenario
 > rsem-simulate-reads /path_to_transcriptome_reference/transcriptome_reference /path_to_RSEM_real_sample/sample.stat/sample.model /path_to_simulated_profile_sample/sample_sim_iso.results 0.1 N sample
-6-	Bowtie alignment of simulated samples: Each simulated sample was aligned against the HG19 reference trasncriptome. Then, the reads achieving maping q-value lower than 20 were filtered out. Command lines: 
+```
+8-	Bowtie alignment of simulated samples: Each simulated sample iss aligned against the HG19 reference trasncriptome. Then, the reads achieving maping q-value lower than 20 are filtered out. 
+```
 > cd path_to_alignment_cdna_sim_scenario
 > bowtie -q -n 3 -e 99999999 -l 15 -I 30 -X 270 --chunkmbs 512 -p 12 -a -S /path_to_transcriptome_reference/transcriptome_reference -1 /path_to_simulated_sample_sim_scenario/sample_1.fq -2 /path_to_simulated_sample_sim_scenario /sample_2.fq sample.sam
 > samtools view -bh -q20 -S sample.sam > sample.mapq20.bam
-7-	Quantification of simulated samples at isoform level: Aligned reads were quantified to obtain the expression profile of each sample at the isoform level. Command line:
+```
+9-	Quantification of simulated samples at isoform level: Aligned reads are quantified to obtain the expression profile of each sample at the isoform level.
+```
 > cd path_to_RSEM_sim_scenario 
 > rsem-calculate-expression --paired-end --no-bam-output -p 18 --samtools-sort-mem 8G --temporary-folder tmp --bam /path_to_alignment_cdna_sim_scenario/sample.mapq20.bam /path_to_transcriptome_reference/transcriptome_reference sample > out.txt
-8-	Tophat alignment of simulated samples: Each simulated sample was aligned against the HG19 reference genome. Then, the reads achieving maping q-value lower than 20 were filtered out. Command lines: 
+```
+10-	Tophat2 alignment of simulated samples: Each simulated sample is aligned against the HG19 reference genome. 
+```
 > cd path_to_alignment_genome_sim_scenario
 > tophat2 --bowtie1 --no-novel-juncs --no-novel-indels --segment-length 18 -r 800 -p 22 --no-coverage-search -o sample --transcriptome-index /path_to_transcriptome_reference/transcriptome_reference /path_to_genome_reference/genome_reference /path_to_simulated_sample_sim_scenario/sample_1.fq /path_to_simulated_sample_sim_scenario/sample_2.fq
-9-	Exon level quantification for SplicingCompass: This quantification was made using using the coverageBed tool. It was based on a flattened reference annotation file generated by means of an R script provided with the SplicingCompass package.
+```
+11-	Exon level quantification for SplicingCompass: This quantification is made using using the coverageBed tool. It was based on a flattened reference annotation file generated by means of an R script provided with the SplicingCompass package.
+```
 > cd path_to_quantification_covBed_sim_scenario
 > coverageBed -split -abam /path_to_alignment_genome_sim_scenario/sample/accepted_hits.bam -b /path_to_annotation_files/flattened.splcmp.gtf > sample.covBed.counts
-10-	Exon level quantification for DEXSeq: This quantification was made using using the python script dexseq_count.py provided with the DEXSeq package. It was based on a flattened reference annotation file generated by means of the other python script dexseq_prepare_annotation.py, also provided with the DEXSeq package.
+```
+12-	Exon level quantification for DEXSeq: This quantification is made using using the python script dexseq_count.py provided with the DEXSeq package. It was based on a flattened reference annotation file generated by means of the other python script dexseq_prepare_annotation.py, also provided with the DEXSeq package.
+```
 > cd path_to_quantification_DEXSeq_sim_scenario
 > python /usr/local/lib/R/library/DEXSeq/python_scripts/dexseq_count.py -p yes -f bam -a 20 -r pos /path_to_annotation_files/flattened.dexseq.gtf /path_to_alignment_genome_sim_scenario/sample/accepted_hits.bam sample.htseq.counts
-11-	Analysis with Cufflinks: This steps involved several stages. I a first stage, the quantification was done using Cufflinks; then, samples assemblies were merged with Cuffmerge and compared against the annotation file using Cuffcompare. Finally, differential expression changes were analyzed by means of Cuffdiff. 
+```
+13-	Analysis with Cufflinks: This steps involved several stages. I a first stage, the quantification is done using Cufflinks; then, samples assemblies are merged with Cuffmerge and compared against the annotation file using Cuffcompare. Finally, differential expression changes are analyzed by means of Cuffdiff. 
+```
 > cd cufflinks_sample_sim_scenario
 > cufflinks -p16 -g /path_to_annotation_files/annotation.gtf -b /path_to_genome_reference/genome_reference -L sample /path_to_alignment_genome_sim_scenario/sample/accepted_hits.bam
 > cd cufflinks_sim_scenario
 > cuffmerge -p 18 -s /path_to_genome_reference/genome_reference -g /path_to_annotation_files/annotation.gtf assemblies.txt
 > cuffcompare -p 18 -r /path_to_annotation_files/annotation.gtf -s /path_to_genome_reference/genome_reference merged_asm/merged.gtf /path_to_annotation_files/annotation.
 > cuffdiff -p 20 -o cuffdiff_sim_scenario -L C,T -u cuffcmp.combined.gtf /path_to_alignment_genome_sim_scenario/sample1C/accepted_hits.bam, /path_to_alignment_genome_sim_scenario/sample2C/accepted_hits.bam, /path_to_alignment_genome_sim_scenario/sample3C/accepted_hits.bam, /path_to_alignment_genome_sim_scenario/sample4C/accepted_hits.bam /path_to_alignment_genome_sim_scenario/sample1T/accepted_hits.bam, /path_to_alignment_genome_sim_scenario/sample2T/accepted_hits.bam, /path_to_alignment_genome_sim_scenario/sample3T/accepted_hits.bam, /path_to_alignment_genome_sim_scenario/sample4T/accepted_hits.bam, 
-12-	Differential expression analysis: This was the last step. It was performed running the DIEAnalysis.R and DSAnalysis.R scripts listed in the APPENDIX III and APPENDIX IV, respectively. 
+```
+14-	Differential expression analysis: This is the last processing step. It is performed running the DIEAnalysis.R and DSAnalysis.R scripts stored in the R_scripts directory. 
 
