@@ -17,6 +17,7 @@ For instance, if you have three sra files called "file1.sra", "file2.sra" and "f
 5-	Modification of the expression profiles: The sample’s expression profiles are used to build the expression matrix where controlled differential expression changes will be simulated. This step is performed running the R script: “profilesSimulation.R” contained in the Simulation/scripts/ directory 
 
 6-	Samples simulation: Each sample for every simulation of each scenario is generated using the simulateReads.sh script. The use of this script requires the specification of two ordered parameters, the first one is the number of sequencing reads to simulate (N) and the second one is the name of the sample to be simulated (sampleName).
+
 7- Processing with command line softwares using the processing.sh script. This file performs
 
     - Transcriptome alignment with Bowtie
