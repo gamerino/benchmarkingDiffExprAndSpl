@@ -1,73 +1,55 @@
-Analysis steps performed to simulate and analyze RNA-seq experiments: 
+Analysis steps performed to simulate and analyze RNA-seq experiments using the provided scripts. Note that all scripts had definitions about files location that you need to change BEFORE their uses. Also, if the program files are installed in other directories than your $PATH, you will need to specify the programs directory on the script files. 
 
-1-	Samples downloading: Download all samples from the NCBI ftp
+1-	Samples downloading: Download all samples from the NCBI ftp and save those together, for example in a folder called sraFiles. 
 
-2-	Extract fastq files from SRA file doing
+2-	Extract fastq files from SRA file running the fastqExtraction.sh script. ATTENTION: previously you need to create a text file ("samplesNames") listing the names of the sra files, one per line. 
 
-```
-    > fastq-dump --split-3 file
-```
-3- Formatting and indexing reference files
+For instance, if you have three sra files called "file1.sra", "file2.sra" and "file3.sra", your samplesNames file should look as 
 
-```
-    > bowtie-build /path_to_transcriptome_reference/transcriptome_reference.fasta /path_to_transcriptome_reference/transcriptome_reference
-    > bowtie-build /path_to_genome_reference/genome_reference.fasta /path_to_genome_reference/genome_reference
-    > python /path/to/library/DEXSeq/python_scripts/dexseq_prepare_annotation.py /path_to_annotation_files/annotation_file.gtf  /path_to_annotation_files/flattened.dexseq.gtf
-    
-```
-4-	Transcriptome alignment: Each sample is aligned against the HG19 reference trasncriptome using Bowtie. Then, aligned reads achieving maping q-value lower than 20 are filtered out.
+        file1
+        file2
+        file3
 
-```
-> cd path_to_sample_alignment_cdna
-> bowtie -q -n 3 -e 99999999 -l 15 -I 30 -X 270 --chunkmbs 512 -p 12 -a -S /path_to_transcriptome_reference/transcriptome_reference -1 /path_fastq_reads/sample_1.fastq -2 /path_fastq_reads/sample_2.fastq sample.sam
-> samtools view -bh -q20 -S sample.sam > sample.mapq20.bam
-```
-5-	Quantification at the isoform level: Aligned reads are quantified to obtain the expression profile of each sample at the isoform level.
-```
-> cd path_to_RSEM_real_sample 
-> rsem-calculate-expression --paired-end --no-bam-output -p 18 --samtools-sort-mem 8G --temporary-folder tmp --bam /path_to_sample_alignment_cdna/sample.mapq20.bam /path_to_transcriptome_reference/transcriptome_reference sample > out.txt
-```
-6-	Modification of the expression profiles: The sample’s expression profiles are used to build the expression matrix where controlled differential expression changes will be simulated. This step is performed running the R script: “profilesSimulation.R” contained in the Simulation/scripts/ directory 
+3- Formatting and indexing reference files using the referencePreparation.sh script. 
 
-7-	Samples simulation: Each sample for every simulation of each scenario is generated using the next command line, whereas N means the number of simulated reads:
-```
-> cd path_to_simulated_sample_sim_scenario
-> rsem-simulate-reads /path_to_transcriptome_reference/transcriptome_reference /path_to_RSEM_real_sample/sample.stat/sample.model /path_to_simulated_profile_sample/sample_sim_iso.results 0.1 N sample
-```
-8-	Bowtie alignment of simulated samples: Each simulated sample iss aligned against the HG19 reference trasncriptome. Then, the reads achieving maping q-value lower than 20 are filtered out. 
-```
-> cd path_to_alignment_cdna_sim_scenario
-> bowtie -q -n 3 -e 99999999 -l 15 -I 30 -X 270 --chunkmbs 512 -p 12 -a -S /path_to_transcriptome_reference/transcriptome_reference -1 /path_to_simulated_sample_sim_scenario/sample_1.fq -2 /path_to_simulated_sample_sim_scenario /sample_2.fq sample.sam
-> samtools view -bh -q20 -S sample.sam > sample.mapq20.bam
-```
-9-	Quantification of simulated samples at isoform level: Aligned reads are quantified to obtain the expression profile of each sample at the isoform level.
-```
-> cd path_to_RSEM_sim_scenario 
-> rsem-calculate-expression --paired-end --no-bam-output -p 18 --samtools-sort-mem 8G --temporary-folder tmp --bam /path_to_alignment_cdna_sim_scenario/sample.mapq20.bam /path_to_transcriptome_reference/transcriptome_reference sample > out.txt
-```
-10-	Tophat2 alignment of simulated samples: Each simulated sample is aligned against the HG19 reference genome. 
-```
-> cd path_to_alignment_genome_sim_scenario
-> tophat2 --bowtie1 --no-novel-juncs --no-novel-indels --segment-length 18 -r 800 -p 22 --no-coverage-search -o sample --transcriptome-index /path_to_transcriptome_reference/transcriptome_reference /path_to_genome_reference/genome_reference /path_to_simulated_sample_sim_scenario/sample_1.fq /path_to_simulated_sample_sim_scenario/sample_2.fq
-```
-11-	Exon level quantification for SplicingCompass: This quantification is made using using the coverageBed tool. It was based on a flattened reference annotation file generated by means of an R script provided with the SplicingCompass package.
-```
-> cd path_to_quantification_covBed_sim_scenario
-> coverageBed -split -abam /path_to_alignment_genome_sim_scenario/sample/accepted_hits.bam -b /path_to_annotation_files/flattened.splcmp.gtf > sample.covBed.counts
-```
-12-	Exon level quantification for DEXSeq: This quantification is made using using the python script dexseq_count.py provided with the DEXSeq package. It was based on a flattened reference annotation file generated by means of the other python script dexseq_prepare_annotation.py, also provided with the DEXSeq package.
-```
-> cd path_to_quantification_DEXSeq_sim_scenario
-> python /usr/local/lib/R/library/DEXSeq/python_scripts/dexseq_count.py -p yes -f bam -a 20 -r pos /path_to_annotation_files/flattened.dexseq.gtf /path_to_alignment_genome_sim_scenario/sample/accepted_hits.bam sample.htseq.counts
-```
-13-	Analysis with Cufflinks: This steps involved several stages. I a first stage, the quantification is done using Cufflinks; then, samples assemblies are merged with Cuffmerge and compared against the annotation file using Cuffcompare. Finally, differential expression changes are analyzed by means of Cuffdiff. 
-```
-> cd cufflinks_sample_sim_scenario
-> cufflinks -p16 -g /path_to_annotation_files/annotation.gtf -b /path_to_genome_reference/genome_reference -L sample /path_to_alignment_genome_sim_scenario/sample/accepted_hits.bam
-> cd cufflinks_sim_scenario
-> cuffmerge -p 18 -s /path_to_genome_reference/genome_reference -g /path_to_annotation_files/annotation.gtf assemblies.txt
-> cuffcompare -p 18 -r /path_to_annotation_files/annotation.gtf -s /path_to_genome_reference/genome_reference merged_asm/merged.gtf /path_to_annotation_files/annotation.
-> cuffdiff -p 20 -o cuffdiff_sim_scenario -L C,T -u cuffcmp.combined.gtf /path_to_alignment_genome_sim_scenario/sample1C/accepted_hits.bam, /path_to_alignment_genome_sim_scenario/sample2C/accepted_hits.bam, /path_to_alignment_genome_sim_scenario/sample3C/accepted_hits.bam, /path_to_alignment_genome_sim_scenario/sample4C/accepted_hits.bam /path_to_alignment_genome_sim_scenario/sample1T/accepted_hits.bam, /path_to_alignment_genome_sim_scenario/sample2T/accepted_hits.bam, /path_to_alignment_genome_sim_scenario/sample3T/accepted_hits.bam, /path_to_alignment_genome_sim_scenario/sample4T/accepted_hits.bam, 
-```
-14-	Differential expression analysis: This is the last processing step. It is performed running the DIEAnalysis.R and DSAnalysis.R scripts stored in the R_scripts directory. 
+4- Obtain information from real samples: Each RNA-seq sample is aligned against the HG19 reference trasncriptome using Bowtie and then quantified to obtain the expression profile at the isoform level using the initialProcessing.sh script.
+
+5-	Modification of the expression profiles: The sample’s expression profiles are used to build the expression matrix where controlled differential expression changes will be simulated. This step is performed running the R script: “profilesSimulation.R” contained in the Simulation/scripts/ directory 
+
+6-	Samples simulation: Each sample for every simulation of each scenario is generated using the simulateReads.sh script. The use of this script requires the specification of two ordered parameters, the first one is the number of sequencing reads to simulate (N) and the second one is the name of the sample to be simulated (sampleName).
+7- Processing with command line softwares using the processing.sh script. This file performs
+
+    - Transcriptome alignment with Bowtie
+    - Isoform quantification using RSEM
+    - Genome alignment with Tophat2
+    - Exon quantification for SplicingCompass using coverageBed
+    - Exon quantification for DEXSeq using the python script provided within the R package
+    - Isoform reconstruction and quantification using Cufflinks
+8-	Analysis with Cufflinks. The analysis with Cufflinks is completed by means of the cufflinks.sh script. Before use it, you should create an assemblies.txt file listing the full paths to the transcripts.gtf files of all samples, generated in the previous step. 
+9-	Differential expression analysis: It is performed running the DIEAnalysis.R and DSAnalysis.R scripts stored in the R_scripts directory. 
+
+If you want to simulate M experimental scenarios replicated N times, we suggest creating a file structure like the following
+
+    * SIM_A/
+       * REPLICATION_I/
+       * ...
+       * REPLICATION_J/
+       * ...
+       * REPLICATION_N/
+    * ...
+    * SIM_I/
+       * REPLICATION_I/
+       * ...
+       * REPLICATION_J/
+       * ...
+       * REPLICATION_N/
+    * ...
+    * SIM_M/
+       * REPLICATION_I/
+       * ...
+       * REPLICATION_J/
+       * ...
+       * REPLICATION_N/
+
+The pipeline explained above allows the generation of one replication (J) of one scenario (I) thus, we recommended storing their results in the corresponding directory SIM_I/REPLICATION_J. 
 
