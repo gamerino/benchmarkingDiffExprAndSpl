@@ -27,8 +27,8 @@ For instance, if you have three sra files called "file1.sra", "file2.sra" and "f
     - Exon quantification for `DEXSeq` using the python script provided within the `R` package
     - Isoform reconstruction and quantification using `Cufflinks`
 
-8-	Analysis with `Cufflinks`. The analysis with `Cufflinks` is completed by means of the `cufflinks.sh` script. Before use it, you should create an assemblies.txt file listing the full paths to the *transcripts.gtf* files of all samples, generated in the previous step. 
-`
+8-	Analysis with `Cufflinks`. The analysis with `Cufflinks` is completed by means of the `cufflinks.sh` script. Before use it, you should create an assemblies.txt file listing the full paths to the *transcripts.gtf* files of all samples, generated in the previous step.
+
 9-	Differential expression analysis: It is performed running the `DIEAnalysis.R` and `DSAnalysis.R` scripts stored in the `R_scripts` directory. 
 
 If you want to simulate *M* experimental scenarios replicated *N* times, we suggest creating a file structure like the following
@@ -55,4 +55,6 @@ If you want to simulate *M* experimental scenarios replicated *N* times, we sugg
        * REPLICATION_N/
 
 The pipeline explained above allows the generation of one replication (*J*) of one scenario (*I*) thus, we recommended storing their results in the corresponding directory *SIM_I/REPLICATION_J*. 
+
+For the analysis of real data, the step 4, 5 and 6 should be ommited.
 
