@@ -15,14 +15,14 @@ READFILES=/path_to_fastq_files
 
 # Directory to save the transcriptome alignments
 
-TRANSALIGN=/path_to_save_transcriptome_alignments
+TRANSCALIGN=/path_to_save_transcriptome_alignments
 
 # Directory to save quantification at isoform level
 ISOQUANT=/path_to_save_isoform_quant
 
 ## Align reads
 
-cd $TRANSALIGN
+cd $TRANSCALIGN
 
 for file in `cat $SAMPLES`
 do
@@ -44,7 +44,7 @@ do
 	cd $file
 	
 	rsem-calculate-expression --paired-end --no-bam-output -p 20 \
-	--bam $TRANSALIGN/${file}.mapq20.bam \
+	--bam $TRANSCALIGN/${file}.mapq20.bam \
 	$TRANSCDIR/transcriptome_reference $file > out.txt
 
 	cd ..
