@@ -19,22 +19,6 @@ The structure of this repository is as follows:
 
 Each directory contain a README and a HOWTO file. 
 
-Installation of the following software is needed:
-
-- SRA toolkit (http://www.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software)
-
-- TopHat2 (https://ccb.jhu.edu/software/tophat/index.shtml)
-
-- Bowtie (http://bowtie-bio.sourceforge.net/index.shtml)
-
-- Samtools (http://www.htslib.org/download/)
-
-- RSEM (http://deweylab.biostat.wisc.edu/rsem/)
-
-- Cufflinks2 (http://cole-trapnell-lab.github.io/cufflinks/)
-
-- BedTools (https://github.com/arq5x/bedtools2/releases)
-
 The fastq files corresponding to the human samples can be downloaded from ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByStudy/sra/SRP/SRP002/SRP002628
 
 - The normal samples used are: 
@@ -64,5 +48,44 @@ The human reference files Ensembl can be donloaded from:
    * Transcriptome FASTA file, ftp://ftp.ensembl.org/pub/release-75/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh37.75.cdna.all.fa.gz
     
    * Annotation GTF file, ftp://ftp.ensembl.org/pub/release-75/gtf/homo_sapiens/Homo_sapiens.GRCh37.75.gtf.gz
+
+Installation of the following software is necessary:
+
+- SRA toolkit (http://www.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software)
+
+- TopHat2 (https://ccb.jhu.edu/software/tophat/index.shtml)
+
+- Bowtie (http://bowtie-bio.sourceforge.net/index.shtml)
+
+- Samtools (http://www.htslib.org/download/)
+
+- RSEM (http://deweylab.biostat.wisc.edu/rsem/)
+
+- Cufflinks2 (http://cole-trapnell-lab.github.io/cufflinks/)
+
+- BedTools (https://github.com/arq5x/bedtools2/releases)
+
+- SplicingCompass (http://www.mybiosoftware.com/splicingcompass-1-0-1-differential-splicing-detection-rna-seq-data.html)
+
+Installation of the following R packages is required:
+
+- DESeq2 (http://bioconductor.org/packages/DESeq2/)
+- NOISeq (http://bioconductor.org/packages/NOISeq/)
+- Limma(http://bioconductor.org/packages/Limma/)
+- EBSeq (http://bioconductor.org/packages/EBSeq/)
+- DEXSeq (http://bioconductor.org/packages/DEXSeq/)
+- BiocParallel (http://bioconductor.org/packages/BiocParallel/)
+- ggplot2 (https://CRAN.R-project.org/package=ggplot2)
+- gridExtra (https://CRAN.R-project.org/package=gridextra)
+- cowplot (https://CRAN.R-project.org/package=cowplot)
+- VennDiagram (https://CRAN.R-project.org/package=VennDiagram)
+- FSA (https://CRAN.R-project.org/package=FSA)
+- reshape2 (https://CRAN.R-project.org/package=reshape2)
+
+
+
+
+
+
 
 

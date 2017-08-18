@@ -1,4 +1,4 @@
-This folder contains the code and instructions needed to perform samples alingment, quantification and differential expression analysis. 
+This folder contains the code and instructions needed to perform samples alignment, quantification and differential expression analysis. 
 
 The HOWTO file explains how the code should be used.
 

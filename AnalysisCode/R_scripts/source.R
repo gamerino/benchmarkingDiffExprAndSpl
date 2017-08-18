@@ -1,6 +1,9 @@
 
-library("DESeq2");library("NOISeq");library( "EBSeq");library( "ggplot2");
-library( "gridExtra");library( "VennDiagram");library("FSA"); library("reshape2")
+library("DESeq2");library("NOISeq");library( "EBSeq")
+library("DEXSeq");library("SplicingCompass"); library("Limma")
+library( "ggplot2");library( "gridExtra");library( "VennDiagram")
+library("FSA"); library("reshape2")
+library("BiocParallel");library("cowplot")
 
 
 performance_stats_DIEMethods<-function(isoDE, nonisoDE, iso_info ){
@@ -18,8 +21,10 @@ performance_stats_DIEMethods<-function(isoDE, nonisoDE, iso_info ){
   TPR<-TP/length(positives)
   PPV<-TP/(TP+FP) 
   FScore<-2*TP/(2*TP+FP+FN)
-  df<-data.frame(total_DE=total_DE, TP=TP, TN=TN, FP=FP, FN=FN, Accuracy=acc,
-    Sensitivity=TPR, Precision=PPV, FScore=FScore)
+  FPR<-FP/(FP+TN)
+
+  df<-data.frame(total_DE=total_DE, TP=TP, TN=TN, FP=FP, FN=FN, Accuracy=acc,  
+    FPR=FPR, Sensitivity=TPR, Precision=PPV, FScore=FScore)
   colnames(df)[ncol(df)]<-"F-score"
   return(df)
 }
@@ -41,8 +46,9 @@ performance_stats_DSMethods<-function(isoDE, nonisoDE, iso_info ){
   TPR<-TP/length(positives)
   PPV<-TP/(TP+FP)
   FScore<-2*TP/(2*TP+FP+FN)
-  df<-data.frame(total_DE=total_DE, TP=TP, TN=TN, FP=FP, FN=FN, Accuracy=acc,
-     Sensitivity=TPR, Precision=PPV, FScore=FScore)
+  FPR<-FP/(FP+TN)
+  df<-data.frame(total_DE=total_DE, TP=TP, TN=TN, FP=FP, FN=FN, Accuracy=acc,  
+    FPR=FPR, Sensitivity=TPR, Precision=PPV, FScore=FScore)
   colnames(df)[ncol(df)]<-"F-score"
   return(df)
 }

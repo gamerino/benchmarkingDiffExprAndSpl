@@ -2,7 +2,7 @@
 conditions<-factor(c(rep("Normal",4),rep("Tumor",4)),"Tumor"))
 levels=c("Normal",
 library(SplicingCompass); library(DEXSeq); library(limma)
-setwd("/path_to_DS_scenario_sim/")
+setwd("/path_to_DS_scenario/sim_i/")
 expInf<-new("ExperimentInfo")
 expInf<-setDescription(expInf,"NormalVsTumor")
 expInf<-setGroupInfo(expInf, groupName1="Normal", sampleNumsGroup1=1:4,
@@ -140,8 +140,7 @@ return(as.character(id))
 cuffresults_exp<-cuffresults_exp[cuffresults_exp$test_id %in% c(uniqID, aux),]
 # convert gene name to ensembl
 conversion_info<-
-read.delim("~/prostate3case/simulation/DIE_results/moreRestrictive/gene_names_a
-nd_entrez_interest2.tab", header=TRUE)
+read.delim("~/path_to_annotation_files/tableEntreZ2Ensembl.tab", header=TRUE)
 rownames(conversion_info)<-conversion_info$gene_name
 cuffresults_exp<-cuffresults_exp[cuffresults_exp$gene %in%
 cuffresults_exp$gene[(cuffresults_exp$gene %in% rownames(conversion_info))] ,]

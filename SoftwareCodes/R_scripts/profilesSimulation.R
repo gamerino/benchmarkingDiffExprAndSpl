@@ -125,10 +125,10 @@ p<-arrangeGrob(g1,g2, nrow=1, ncol=2)
 plot(p)
 
 # genes were clustered in four groups according to the number of annotated transcripts #that they have: 
-# “0” = 1 annotated transcript
-# “I” = 2-4 annotated transcripts
-# “II”= 5-9 annotated transcripts
-# “III”= >9 annotated transcripts
+# "0” = 1 annotated transcript
+# "I” = 2-4 annotated transcripts
+# "II”= 5-9 annotated transcripts
+# "III”= >9 annotated transcripts
 # add the gene groups to the gene_info data.frame
 gene_info$group<-cut(gene_info[,"numb_iso"], breaks=c(1,2,5,10,Inf), include.lowest=TRUE, right=FALSE)
 levels(gene_info$group)<-c("0","I", "II", "III")
@@ -187,7 +187,7 @@ DEgenes<-names_NSAgenes[DE_index]
 DSgenes<-c(DSgI, DSgII, DSgIII)
 DS_iso<-iso_info[iso_info$gene_id %in% as.character(DSgenes),]
 DE_iso<-iso_info[iso_info$gene_id %in% as.character(DEgenes),]
-# Simulation groups: We selected 120 (250) genes from group “0” (1 isoform) to be simulated as DE, and 208(480) from DSgenes to be simulated as DIE, DIEDS, DS.
+# Simulation groups: We selected 120 (250) genes from group "0” (1 isoform) to be simulated as DE, and 208(480) from DSgenes to be simulated as DIE, DIEDS, DS.
 DIE_index<-sample(1:length(DSgenes), 208)
 DIE_genes<-DSgenes[DIE_index]
 table(gene_info$group[gene_info$gene_id %in% DIE_genes])
@@ -224,7 +224,7 @@ gene_info$DIEgroup[gene_info$gene_id %in% DIE_genesdf[,4]]<-factor(rep(c( folds$
 
 ## 2) Differential splicing
 ratios<-c("0.8-0.5","0.5-0.8","0.6-0.3","0.3-0.6","0.4-0.1","0.1-0.4","0.7-0", "0-0.7")
-#For the ratio group “0.1-0.4” (“0.4-0.1”) we considered only genes from groups II and III, meanwhile for ratio group “0-0.7” (“0.7-0”) we considered only genes from I group in order to simulate major isoforms proportions observed in a real situation.
+#For the ratio group "0.1-0.4” ("0.4-0.1”) we considered only genes from groups II and III, meanwhile for ratio group "0-0.7” ("0.7-0”) we considered only genes from I group in order to simulate major isoforms proportions observed in a real situation.
 # 68 genes for the first and second ratio groups and 72 for the last two. In S2 and S3 160 genes for each ratio groups were used
 a<-sample(SDg_genes, 68) # 
 b<-sample(SDg_genes[!SDg_genes %in% a],68)
@@ -547,7 +547,7 @@ prob<-size/(size+meansC1)
 
 numberReplicates<-10
 for(nsim in 1:numberReplicates){
-setwd(paste(“/path_to_simulation_scenario/sim”, “nsim”))
+setwd(paste("/path_to_simulation_scenario/sim”, "nsim”))
 C1repeticiones10<-t(sapply(1:nrow(iso_info), function(iso){
 iso_cts_C1<-t(sapply(1:10, function(x){
       cond1<-rnbinom(n=4, size=size[iso], prob=prob[iso])

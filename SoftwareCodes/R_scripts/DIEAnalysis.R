@@ -2,7 +2,7 @@
 library("DESeq2");library("NOISeq");library("EBSeq");library("limma");
 library(edgeR)
 # This script should be ran over each simulation of each scenario
-setwd("/path_to_DIE_analysis/replication_i/")
+setwd("/path_to_DIE_analysis/sim_i/")
 g2t<-read.delim("gene2transc.txt", header=FALSE)
 colnames(g2t)<-c("gene_id", "transcript_id")
 # Preparing expression matrix
