@@ -41,7 +41,7 @@ The fastq files corresponding to the human samples can be downloaded from ftp://
     - SRR057646
     - SRR057648
 
-The human reference files Ensembl can be donloaded from: 
+The human reference files can be donloaded from: 
 
    * Genome FASTA file,  ftp://ftp.ensembl.org/pub/release-75/fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz
     
