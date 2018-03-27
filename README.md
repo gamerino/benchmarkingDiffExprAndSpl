@@ -16,7 +16,11 @@ The structure of this repository is as follows:
 - AnalysisCode
   - R_scripts: Directory containing the code used to perform the comparative analysis
   - figures: Directory containing comparison figures
-
+- Data  
+  - Scenario1: Directory containing the simulation profiles for the ten replications of scenario 1 where four replicates per condition and 5% of differentially expressed genes were considered.
+  - Scenario2: Directory containing the simulation profiles for the ten replications of scenario 2 where four replicates per condition and 10% of differentially expressed genes were considered.
+  - Scenario3: Directory containing the simulation profiles for the ten replications of scenario 3 where eight replicates per condition and 10% of differentially expressed genes were considered.
+  
 Each directory contain a README and a HOWTO file. 
 
 The fastq files corresponding to the human samples can be downloaded from ftp://ftp-trace.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByStudy/sra/SRP/SRP002/SRP002628
