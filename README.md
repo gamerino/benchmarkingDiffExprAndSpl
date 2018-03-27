@@ -2,7 +2,7 @@
 
 This repository contains the code used in our paper comparing several pipelines for differential isoform expression and differential splicing analysis:
 
-Merino GA, Conesa A & Fernández EA: A benchmarking of workflows for detecting differential splicing and differential expression at isoform level in human RNA-seq studies.
+Merino, G.A., Conesa, A., & Fernández, E.A. (2017). A benchmarking of workflows for detecting differential splicing and differential expression at isoform level in human RNA-seq studies. Briefings in bioinformatics. DOI:https://doi.org/10.1093/bib/bbx122
 
 The aim of our work was to contrast different workflows for differential isoform expression and differential splicing based on the most used tools. Our study is based on simulated RNA-seq datasets generated from real experiments. 
 
@@ -41,7 +41,7 @@ The fastq files corresponding to the human samples can be downloaded from ftp://
     - SRR057646
     - SRR057648
 
-The human reference files Ensembl can be donloaded from: 
+The human reference files can be donloaded from: 
 
    * Genome FASTA file,  ftp://ftp.ensembl.org/pub/release-75/fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa.gz
     

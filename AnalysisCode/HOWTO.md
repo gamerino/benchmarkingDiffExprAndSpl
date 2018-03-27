@@ -2,7 +2,7 @@ Analysis steps performed to compare the results of DIE and DS pipelines. Note th
 
 The steps are 
 
-1-  Load the packages and functions required to perform the comparison.
+1-  Load the packages and functions required to perform the comparison contained in the `source.R` file.
 
 2-	Comparison of DIE pipelines with the `DIEComparison.R` script.  
 
