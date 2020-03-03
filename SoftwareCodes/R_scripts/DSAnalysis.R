@@ -1,8 +1,7 @@
 # DSAnalysis.R
-conditions<-factor(c(rep("Normal",4),rep("Tumor",4)),"Tumor"))
-levels=c("Normal",
 library(SplicingCompass); library(DEXSeq); library(limma)
 setwd("/path_to_DS_scenario/sim_i/")
+conditions<-factor(c(rep("Normal",4),rep("Tumor",4)),levels=c("Normal","Tumor"))
 expInf<-new("ExperimentInfo")
 expInf<-setDescription(expInf,"NormalVsTumor")
 expInf<-setGroupInfo(expInf, groupName1="Normal", sampleNumsGroup1=1:4,
